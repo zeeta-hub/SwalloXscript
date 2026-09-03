@@ -1,1 +1,1 @@
-https://jnkie.com/get-key/httpsrawgithubusercontentcomzeeta-hubswalloxscriptrefsheadsmainmainlua
+https://api.jnkie.com/api/v1/luascripts/public/da0f6ce3ff04f6eeb2c74bec5a3c74387fdca8dfd0803e1007fc9bbf4f924f7a/download
