@@ -1,4 +1,4 @@
--- Swallo Hub - Blox Fruit (Banana Hub UI Style & Red Theme)
+-- Swallo Hub - Blox Fruit (Banana Hub UI Style & Red Theme with Exit Button)
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
@@ -9,7 +9,7 @@ SwalloHub.Name = "SwalloHub"
 SwalloHub.Parent = CoreGui
 SwalloHub.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Main Frame (Mirip layout Banana Hub: Search bar kiri atas, Sidebar menu di kiri, Container di kanan)
+-- Main Frame
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = SwalloHub
@@ -21,13 +21,13 @@ MainFrame.Size = UDim2.new(0, 600, 0, 380)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Garis Aksen Border Merah Tipis di Luar / Dalam
+-- Garis Aksen Border Merah
 local MainStroke = Instance.new("UIStroke")
 MainStroke.Parent = MainFrame
 MainStroke.Color = Color3.fromRGB(255, 0, 0)
 MainStroke.Thickness = 1.5
 
--- Top Bar Mini / Judul Hub di atas Search Bar
+-- Top Bar Info
 local TopBarInfo = Instance.new("Frame")
 TopBarInfo.Name = "TopBarInfo"
 TopBarInfo.Parent = MainFrame
@@ -46,13 +46,30 @@ HubTitle.TextColor3 = Color3.fromRGB(255, 50, 50)
 HubTitle.TextSize = 15
 HubTitle.TextXAlignment = Enum.TextXAlignment.Left
 
--- Tombol Close / Minimize di Pojok Kanan Atas
+-- Tombol Close (X) untuk Menutup / Menghapus Seluruh Script
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = TopBarInfo
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+CloseButton.BorderSizePixel = 0
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.Size = UDim2.new(0, 25, 0, 20)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 14
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 4)
+CloseCorner.Parent = CloseButton
+
+-- Tombol Minimize (-) untuk Membuka/Menutup UI
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Name = "MinimizeButton"
 MinimizeButton.Parent = TopBarInfo
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 MinimizeButton.BorderSizePixel = 0
-MinimizeButton.Position = UDim2.new(1, -35, 0, 5)
+MinimizeButton.Position = UDim2.new(1, -65, 0, 5)
 MinimizeButton.Size = UDim2.new(0, 25, 0, 20)
 MinimizeButton.Font = Enum.Font.SourceSansBold
 MinimizeButton.Text = "-"
@@ -83,7 +100,7 @@ local OpenCorner = Instance.new("UICorner")
 OpenCorner.CornerRadius = UDim.new(1, 0)
 OpenCorner.Parent = OpenButton
 
--- Panel Kiri (Sidebar mirip Banana Hub: Ada kolom Search di bagian atas menu)
+-- Panel Kiri (Sidebar)
 local Sidebar = Instance.new("Frame")
 Sidebar.Name = "Sidebar"
 Sidebar.Parent = MainFrame
@@ -92,7 +109,7 @@ Sidebar.BorderSizePixel = 0
 Sidebar.Position = UDim2.new(0, 0, 0, 30)
 Sidebar.Size = UDim2.new(0, 180, 1, -30)
 
--- Search Bar ala Banana Hub
+-- Search Bar
 local SearchBox = Instance.new("TextBox")
 SearchBox.Name = "SearchBox"
 SearchBox.Parent = Sidebar
@@ -112,7 +129,7 @@ local SearchCorner = Instance.new("UICorner")
 SearchCorner.CornerRadius = UDim.new(0, 4)
 SearchCorner.Parent = SearchBox
 
--- List Menu di Sidebar (Hanya Home sesuai permintaan)
+-- List Menu
 local MenuList = Instance.new("ScrollingFrame")
 MenuList.Name = "MenuList"
 MenuList.Parent = Sidebar
@@ -129,7 +146,7 @@ MenuLayout.Parent = MenuList
 MenuLayout.SortOrder = Enum.SortOrder.LayoutOrder
 MenuLayout.Padding = UDim.new(0, 4)
 
--- Indikator Garis Kuning/Merah Aktif di Menu Kiri (Garis kecil penanda aktif ala Banana Hub)
+-- Menu Home
 local HomeBtn = Instance.new("TextButton")
 HomeBtn.Name = "HomeBtn"
 HomeBtn.Parent = MenuList
@@ -150,7 +167,7 @@ ActiveIndicator.BorderSizePixel = 0
 ActiveIndicator.Position = UDim2.new(0, 0, 0, 0)
 ActiveIndicator.Size = UDim2.new(0, 3, 1, 0)
 
--- Container / Panel Kanan (Tempat Konten/Fitur)
+-- Container Kanan
 local Container = Instance.new("ScrollingFrame")
 Container.Name = "Container"
 Container.Parent = MainFrame
@@ -168,7 +185,7 @@ ContainerLayout.Parent = Container
 ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
 ContainerLayout.Padding = UDim.new(0, 6)
 
--- Header Tab di dalam Container Kanan (Mirip "Sea Event Tab" di gambar)
+-- Tab Header
 local function createTabHeader(text)
 	local headerFrame = Instance.new("Frame")
 	headerFrame.Parent = Container
@@ -186,7 +203,6 @@ local function createTabHeader(text)
 	titleLabel.TextSize = 16
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	-- Tombol Search kecil di kanan atas panel konten ala Banana Hub
 	local searchIconBtn = Instance.new("TextButton")
 	searchIconBtn.Parent = headerFrame
 	searchIconBtn.BackgroundColor3 = Color3.fromRGB(25, 32, 45)
@@ -203,7 +219,7 @@ local function createTabHeader(text)
 	iconCorner.Parent = searchIconBtn
 end
 
--- Elemen Toggle Kotak Khas Banana Hub (Kotak di sebelah kanan item)
+-- Toggle Item
 local function createBananaToggle(text, defaultState)
 	local itemFrame = Instance.new("Frame")
 	itemFrame.Parent = Container
@@ -227,7 +243,6 @@ local function createBananaToggle(text, defaultState)
 	itemLabel.TextSize = 14
 	itemLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	-- Kotak Checkbox ala Banana Hub
 	local checkBox = Instance.new("TextButton")
 	checkBox.Parent = itemFrame
 	checkBox.BackgroundColor3 = defaultState and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(30, 40, 58)
@@ -248,12 +263,11 @@ local function createBananaToggle(text, defaultState)
 	end)
 end
 
--- Membangun Tampilan Menu Home
 createTabHeader("Home Tab")
 createBananaToggle("Main Status Active", true)
 createBananaToggle("Auto Collect Chest", false)
 
--- Fungsi Buka Tutup UI & Tombol Bundar
+-- Fungsi Buka Tutup UI & Tombol Exit (X)
 local isOpen = true
 
 local function toggleUI()
@@ -264,6 +278,11 @@ end
 
 MinimizeButton.MouseButton1Click:Connect(toggleUI)
 OpenButton.MouseButton1Click:Connect(toggleUI)
+
+-- Tombol X untuk menghancurkan/menutup seluruh script UI
+CloseButton.MouseButton1Click:Connect(function()
+	SwalloHub:Destroy()
+end)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if input.KeyCode == Enum.KeyCode.RightShift or input.KeyCode == Enum.KeyCode.Insert then
