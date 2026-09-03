@@ -1,5 +1,5 @@
 -- ==========================================
--- SWALLO HUB LUA - UPDATED WITH ORION UI & FARM_2
+-- SWALLO HUB LUA - FIXED & INTEGRATED SCRIPT
 -- ==========================================
 
 local Players = game:GetService("Players")
@@ -8,21 +8,58 @@ local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local VirtualUser = game:GetService("VirtualUser")
 
--- Anti AFK[cite: 3]
+-- Anti AFK[cite: 4]
 LocalPlayer.Idled:Connect(function()
     VirtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
     task.wait(1)
     VirtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
 end)
 
--- Load Orion UI Library[cite: 3]
+-- Load Orion UI Library[cite: 4]
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "Swallo Hub - Blox Fruits", HidePremium = false, SaveConfig = false, ConfigFolder = "SwalloHub"})
 
--- Global Variable Auto Farm[cite: 3]
+-- Global Variables[cite: 4]
 _G.AutoFarmLevel = false
+_G.AutoRandomFruit = false
+_G.AutoStoreFruit = false
 
--- Function 1: Otomatis Pegang Fighting Style / Melee[cite: 3]
+-- ----------------------------------------------------
+-- FUNGSI FRUIT (GACHA & STORE)[cite: 4]
+-- ----------------------------------------------------
+spawn(function()
+    while task.wait(1) do
+        if _G.AutoRandomFruit then
+            pcall(function()
+                ReplicatedStorage.Remotes.CommF_:InvokeServer("Cousin", "Buy")
+            end)
+            task.wait(5)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait(1) do
+        if _G.AutoStoreFruit then
+            pcall(function()
+                for _, item in pairs(LocalPlayer.Backpack:GetChildren()) do
+                    if item:IsA("Tool") and item.Name:find("Fruit") then
+                        ReplicatedStorage.Remotes.CommF_:InvokeServer("StoreFruit", item.Name, item)
+                    end
+                end
+                for _, item in pairs(LocalPlayer.Character:GetChildren()) do
+                    if item:IsA("Tool") and item.Name:find("Fruit") then
+                        ReplicatedStorage.Remotes.CommF_:InvokeServer("StoreFruit", item.Name, item)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- ----------------------------------------------------
+-- FUNGSI AUTO FARM LEVEL & FIGHTING STYLE[cite: 4]
+-- ----------------------------------------------------
 function EquipFightingStyle()
     pcall(function()
         if LocalPlayer.Character:FindFirstChildOfClass("Tool") and LocalPlayer.Character:FindFirstChildOfClass("Tool").ToolTip == "Melee" then
@@ -37,7 +74,6 @@ function EquipFightingStyle()
     end)
 end
 
--- Function 2: Database Level, Quest NPC, dan Mob (First Sea)[cite: 3]
 function GetQuestAndMobData()
     local lvl = LocalPlayer.Data.Level.Value
     local data = {}
@@ -68,7 +104,6 @@ function GetQuestAndMobData()
     return data
 end
 
--- Function 3: Main Loop Auto Farm[cite: 3]
 spawn(function()
     while task.wait() do
         if _G.AutoFarmLevel then
@@ -108,7 +143,9 @@ spawn(function()
     end
 end)
 
--- Tabs Setup (Home, Player, Main)
+-- ----------------------------------------------------
+-- USER INTERFACE (UI) TABS[cite: 4]
+-- ----------------------------------------------------
 local HomeTab = Window:MakeTab({
     Name = "Home",
     Icon = "rbxassetid://4483345998",
@@ -151,16 +188,38 @@ PlayerTab:AddDropdown({
 })
 
 local MainTab = Window:MakeTab({
-    Name = "Main",
+    Name = "Auto Farm",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
 MainTab:AddToggle({
-    Name = "Enable Auto Farm & Fighting Style",
+    Name = "Enable Auto Farm Level",
     Default = false,
     Callback = function(Value)
         _G.AutoFarmLevel = Value
+    end    
+})
+
+local FruitTab = Window:MakeTab({
+    Name = "Fruit Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+FruitTab:AddToggle({
+    Name = "Auto Roll / Gacha Fruit[cite: 4]",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoRandomFruit = Value
+    end    
+})
+
+FruitTab:AddToggle({
+    Name = "Auto Store Fruit to Inventory[cite: 4]",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoStoreFruit = Value
     end    
 })
 
