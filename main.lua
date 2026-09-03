@@ -1,4 +1,4 @@
--- Swallo Hub - Blox Fruit (Red Theme & Draggable/Toggleable)
+-- Swallo Hub - Blox Fruit (Red Theme & Floating Toggle Button)
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
@@ -19,7 +19,7 @@ MainFrame.BorderSizePixel = 2
 MainFrame.Position = UDim2.new(0.5, -275, 0.5, -175)
 MainFrame.Size = UDim2.new(0, 550, 0, 350)
 MainFrame.Active = true
-MainFrame.Draggable = true -- Membuat UI bisa digeser (Draggable)
+MainFrame.Draggable = true
 
 -- Top Bar / Header
 local TopBar = Instance.new("Frame")
@@ -41,7 +41,7 @@ Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 16
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Tombol Close / Minimize di Pojok Kanan Atas
+-- Tombol Minimize di Pojok Kanan Atas
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Name = "MinimizeButton"
 MinimizeButton.Parent = TopBar
@@ -54,7 +54,28 @@ MinimizeButton.Text = "-"
 MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 MinimizeButton.TextSize = 18
 
--- Konten Area / Sidebar & Panel
+-- Tombol Bundar Mengambang (Floating Toggle Button) saat UI ditutup
+local OpenButton = Instance.new("TextButton")
+OpenButton.Name = "OpenButton"
+OpenButton.Parent = SwalloHub
+OpenButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+OpenButton.BorderSizePixel = 0
+OpenButton.Position = UDim2.new(0, 20, 0.5, -25)
+OpenButton.Size = UDim2.new(0, 50, 0, 50)
+OpenButton.Font = Enum.Font.SourceSansBold
+OpenButton.Text = "SW"
+OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenButton.TextSize = 16
+OpenButton.Visible = false
+OpenButton.Active = true
+OpenButton.Draggable = true
+
+-- Membuat bentuk tombol jadi bundar sempurna
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = OpenButton
+
+-- Sidebar / Menu Utama (Hanya ada Home)
 local Sidebar = Instance.new("ScrollingFrame")
 Sidebar.Name = "Sidebar"
 Sidebar.Parent = MainFrame
@@ -63,7 +84,7 @@ Sidebar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Sidebar.BorderSizePixel = 0
 Sidebar.Position = UDim2.new(0, 0, 0, 35)
 Sidebar.Size = UDim2.new(0, 160, 1, -35)
-Sidebar.CanvasSize = UDim2.new(0, 0, 2, 0)
+Sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 Sidebar.ScrollBarThickness = 4
 
 local UIListLayout = Instance.new("UIListLayout")
@@ -71,35 +92,20 @@ UIListLayout.Parent = Sidebar
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 5)
 
--- Fungsi untuk membuat tombol menu di Sidebar
-local function createMenuButton(name, order)
-	local btn = Instance.new("TextButton")
-	btn.Name = name
-	btn.Parent = Sidebar
-	btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-	btn.BorderSizePixel = 0
-	btn.Size = UDim2.new(1, 0, 0, 35)
-	btn.Font = Enum.Font.SourceSans
-	btn.Text = "  " .. name
-	btn.TextColor3 = Color3.fromRGB(220, 220, 220)
-	btn.TextSize = 14
-	btn.TextXAlignment = Enum.TextXAlignment.Left
-	btn.LayoutOrder = order
-	return btn
-end
+-- Tombol Menu "Home"
+local HomeBtn = Instance.new("TextButton")
+HomeBtn.Name = "Home"
+HomeBtn.Parent = Sidebar
+HomeBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+HomeBtn.BorderSizePixel = 0
+HomeBtn.Size = UDim2.new(1, 0, 0, 35)
+HomeBtn.Font = Enum.Font.SourceSansBold
+HomeBtn.Text = "  Home"
+HomeBtn.TextColor3 = Color3.fromRGB(255, 0, 0)
+HomeBtn.TextSize = 14
+HomeBtn.TextXAlignment = Enum.TextXAlignment.Left
 
--- Menu Sesuai Gambar
-createMenuButton("Farming Other", 1)
-createMenuButton("Fruit and Raid, Dunge", 2)
-createMenuButton("Sea Event", 3)
-createMenuButton("Upgrade Race", 4)
-createMenuButton("Get and Upgrade Item", 5)
-createMenuButton("Volcano Event", 6)
-createMenuButton("ESP", 7)
-createMenuButton("PVP", 8)
-createMenuButton("Tab Webhook", 9)
-
--- Container Konten Kanan (Area Fitur Sea Event sebagai contoh)
+-- Container Konten Kanan untuk Menu Home
 local Container = Instance.new("ScrollingFrame")
 Container.Name = "Container"
 Container.Parent = MainFrame
@@ -108,7 +114,7 @@ Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Container.BorderSizePixel = 0
 Container.Position = UDim2.new(0, 160, 0, 35)
 Container.Size = UDim2.new(1, -160, 1, -35)
-Container.CanvasSize = UDim2.new(0, 0, 1.5, 0)
+Container.CanvasSize = UDim2.new(0, 0, 1, 0)
 Container.ScrollBarThickness = 6
 
 local ContainerLayout = Instance.new("UIListLayout")
@@ -116,7 +122,7 @@ ContainerLayout.Parent = Container
 ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
 ContainerLayout.Padding = UDim.new(0, 8)
 
--- Header Section di dalam Konten
+-- Header Section di Menu Home
 local function createSectionHeader(text)
 	local label = Instance.new("TextLabel")
 	label.Parent = Container
@@ -130,7 +136,7 @@ local function createSectionHeader(text)
 	label.TextXAlignment = Enum.TextXAlignment.Left
 end
 
--- Tombol Fitur / Toggle dalam List
+-- Elemen Konten / Fitur Home
 local function createToggleFeature(text, defaultState)
 	local frame = Instance.new("Frame")
 	frame.Parent = Container
@@ -163,28 +169,24 @@ local function createToggleFeature(text, defaultState)
 	end)
 end
 
--- Menambahkan elemen menu Sea Event
-createSectionHeader("Sea Event Tab")
-createToggleFeature("Refresh Player", false)
-createToggleFeature("Auto Sea Event With Friend", false)
-createToggleFeature("Auto Repair Ur Ship", false)
-createToggleFeature("Auto Sea Event", true)
-createToggleFeature("Auto Find Mirage", false)
+createSectionHeader("Welcome to Swallo Hub")
+createToggleFeature("Main Status Active", true)
+createToggleFeature("Auto Collect Chest", false)
 
-createSectionHeader("Kitsune Event")
-createToggleFeature("Teleport To Kitsune Island", false)
-createToggleFeature("Hop Server [ Next Night / Full Moon ]", false)
-
--- Fitur Buka Tutup (Minimize / Open Close) via Tombol Kiri Atas (-) dan Tombol Keyboard (Insert / RightShift)
+-- Fungsi Buka Tutup UI & Munculkan Tombol Bundar
 local isOpen = true
-MinimizeButton.MouseButton1Click:Connect(function()
+
+local function toggleUI()
 	isOpen = not isOpen
 	MainFrame.Visible = isOpen
-end)
+	OpenButton.Visible = not isOpen
+end
+
+MinimizeButton.MouseButton1Click:Connect(toggleUI)
+OpenButton.MouseButton1Click:Connect(toggleUI)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if input.KeyCode == Enum.KeyCode.RightShift or input.KeyCode == Enum.KeyCode.Insert then
-		isOpen = not isOpen
-		MainFrame.Visible = isOpen
+		toggleUI()
 	end
 end)
