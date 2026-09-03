@@ -1,14 +1,13 @@
 -- ==========================================
--- SWALLO HUB LUA - FIXED FUNCTIONAL SCRIPT
+-- SWALLO HUB LUA - MODERN RED UI STYLE (BANANA CAT HUB STYLE)
 -- ==========================================
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
-local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StarterGui = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
 
 if CoreGui:FindFirstChild("SwalloHub") then
     CoreGui.SwalloHub:Destroy()
@@ -19,52 +18,51 @@ ScreenGui.Name = "SwalloHub"
 ScreenGui.Parent = CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Main Frame
+-- Main Container (Dark Rounded Style with Red Border)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainFrame.BorderColor3 = Color3.fromRGB(150, 0, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+MainFrame.BorderColor3 = Color3.fromRGB(200, 0, 0)
 MainFrame.BorderSizePixel = 1
-MainFrame.Position = UDim2.new(0.5, -275, 0.5, -175)
-MainFrame.Size = UDim2.new(0, 550, 0, 350)
+MainFrame.Position = UDim2.new(0.5, -300, 0.5, -190)
+MainFrame.Size = UDim2.new(0, 600, 0, 380)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Top Bar
-local TopBar = Instance.new("Frame")
-TopBar.Name = "TopBar"
-TopBar.Parent = MainFrame
-TopBar.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
-TopBar.BorderSizePixel = 0
-TopBar.Size = UDim2.new(1, 0, 0, 25)
+local MainCorner = Instance.new("UICorner", MainFrame)
+MainCorner.CornerRadius = UDim.new(0, 6)
 
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Parent = TopBar
+-- Top Title Bar
+local TopBar = Instance.new("Frame", MainFrame)
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
+TopBar.BorderSizePixel = 0
+TopBar.Size = UDim2.new(1, 0, 0, 32)
+
+local Title = Instance.new("TextLabel", TopBar)
 Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0.02, 0, 0, 0)
-Title.Size = UDim2.new(0.6, 0, 1, 0)
-Title.Font = Enum.Font.SourceSansBold
-Title.Text = "Swallo Hub Lua - Blox Fruits [Fixed]"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Position = UDim2.new(0.03, 0, 0, 0)
+Title.Size = UDim2.new(0.7, 0, 1, 0)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "Swallo Hub - Blox Fruit"
+Title.TextColor3 = Color3.fromRGB(255, 180, 0)
 Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
 -- Floating Toggle Button
-local FloatingBtn = Instance.new("TextButton")
-FloatingBtn.Name = "FloatingToggle"
-FloatingBtn.Parent = ScreenGui
-FloatingBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
-FloatingBtn.BorderColor3 = Color3.fromRGB(200, 0, 0)
+local FloatingBtn = Instance.new("TextButton", ScreenGui)
+FloatingBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 FloatingBtn.Position = UDim2.new(0, 15, 0.5, -20)
 FloatingBtn.Size = UDim2.new(0, 45, 0, 45)
-FloatingBtn.Font = Enum.Font.SourceSansBold
+FloatingBtn.Font = Enum.Font.GothamBold
 FloatingBtn.Text = "Open"
 FloatingBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 FloatingBtn.TextSize = 12
 FloatingBtn.Active = true
 FloatingBtn.Draggable = true
+
+local FloatCorner = Instance.new("UICorner", FloatingBtn)
+FloatCorner.CornerRadius = UDim.new(0, 8)
 
 local isMenuOpen = true
 FloatingBtn.MouseButton1Click:Connect(function()
@@ -73,66 +71,78 @@ FloatingBtn.MouseButton1Click:Connect(function()
     FloatingBtn.Text = isMenuOpen and "Close" or "Open"
 end)
 
--- Left Menu (Sidebar)
-local LeftMenu = Instance.new("ScrollingFrame")
-LeftMenu.Name = "LeftMenu"
-LeftMenu.Parent = MainFrame
-LeftMenu.Active = true
-LeftMenu.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+-- Left Sidebar (Menu)
+local LeftMenu = Instance.new("ScrollingFrame", MainFrame)
+LeftMenu.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 LeftMenu.BorderSizePixel = 0
-LeftMenu.Position = UDim2.new(0, 0, 0, 25)
-LeftMenu.Size = UDim2.new(0, 130, 1, -25)
-LeftMenu.CanvasSize = UDim2.new(0, 0, 1.2, 0)
-LeftMenu.ScrollBarThickness = 3
+LeftMenu.Position = UDim2.new(0, 0, 0, 32)
+LeftMenu.Size = UDim2.new(0, 175, 1, -32)
+LeftMenu.CanvasSize = UDim2.new(0, 0, 1.5, 0)
+LeftMenu.ScrollBarThickness = 2
 
-local UIListLayout_Menu = Instance.new("UIListLayout")
-UIListLayout_Menu.Parent = LeftMenu
+local UIListLayout_Menu = Instance.new("UIListLayout", LeftMenu)
 UIListLayout_Menu.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_Menu.Padding = UDim.new(0, 3)
+UIListLayout_Menu.Padding = UDim.new(0, 2)
 
--- Right Container
-local RightContainer = Instance.new("Frame")
-RightContainer.Name = "RightContainer"
-RightContainer.Parent = MainFrame
-RightContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+-- Search Box in Sidebar
+local SearchBox = Instance.new("TextBox", LeftMenu)
+SearchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+SearchBox.BorderSizePixel = 0
+SearchBox.Size = UDim2.new(0.95, 0, 0, 30)
+SearchBox.Font = Enum.Font.Gotham
+SearchBox.PlaceholderText = "🔍 Search section or Fun"
+SearchBox.Text = ""
+SearchBox.TextColor3 = Color3.fromRGB(200, 200, 200)
+SearchBox.TextSize = 11
+
+local SearchCorner = Instance.new("UICorner", SearchBox)
+SearchCorner.CornerRadius = UDim.new(0, 4)
+
+-- Right Container (Commands Panel)
+local RightContainer = Instance.new("Frame", MainFrame)
+RightContainer.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
 RightContainer.BorderSizePixel = 0
-RightContainer.Position = UDim2.new(0, 130, 0, 25)
-RightContainer.Size = UDim2.new(1, -130, 1, -25)
+RightContainer.Position = UDim2.new(0, 175, 0, 32)
+RightContainer.Size = UDim2.new(1, -175, 1, -32)
 
-local TabsFolder = Instance.new("Folder")
-TabsFolder.Name = "TabsFolder"
-TabsFolder.Parent = RightContainer
+local TabsFolder = Instance.new("Folder", RightContainer)
 
--- Helper: Create Toggle
+-- Helper: Create Square Toggle Box (Seperti di Gambar Referensi)
 local function createToggle(parent, text, callback)
-    local ToggleFrame = Instance.new("Frame")
-    ToggleFrame.Parent = parent
-    ToggleFrame.BackgroundTransparency = 1
-    ToggleFrame.Size = UDim2.new(1, 0, 0, 28)
+    local ToggleFrame = Instance.new("Frame", parent)
+    ToggleFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
+    ToggleFrame.BorderSizePixel = 0
+    ToggleFrame.Size = UDim2.new(0.96, 0, 0, 36)
+    
+    local Corner = Instance.new("UICorner", ToggleFrame)
+    Corner.CornerRadius = UDim.new(0, 6)
 
-    local TextLabel = Instance.new("TextLabel")
-    TextLabel.Parent = ToggleFrame
+    local TextLabel = Instance.new("TextLabel", ToggleFrame)
     TextLabel.BackgroundTransparency = 1
-    TextLabel.Position = UDim2.new(0.03, 0, 0, 0)
+    TextLabel.Position = UDim2.new(0.04, 0, 0, 0)
     TextLabel.Size = UDim2.new(0.75, 0, 1, 0)
-    TextLabel.Font = Enum.Font.SourceSans
+    TextLabel.Font = Enum.Font.GothamBold
     TextLabel.Text = text
     TextLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
-    TextLabel.TextSize = 13
+    TextLabel.TextSize = 12
     TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    local BoxButton = Instance.new("TextButton")
-    BoxButton.Parent = ToggleFrame
-    BoxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    BoxButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
-    BoxButton.Position = UDim2.new(0.85, 0, 0.15, 0)
-    BoxButton.Size = UDim2.new(0, 18, 0, 18)
+    -- Kotak Toggle Kuning/Oranye khas UI Referensi
+    local BoxButton = Instance.new("TextButton", ToggleFrame)
+    BoxButton.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+    BoxButton.BorderColor3 = Color3.fromRGB(180, 130, 0)
+    BoxButton.BorderSizePixel = 1
+    BoxButton.Position = UDim2.new(0.86, 0, 0.2, 0)
+    BoxButton.Size = UDim2.new(0, 22, 0, 22)
     BoxButton.Text = ""
+    
+    local BoxCorner = Instance.new("UICorner", BoxButton)
+    BoxCorner.CornerRadius = UDim.new(0, 4)
 
     local enabled = false
     BoxButton.MouseButton1Click:Connect(function()
         enabled = not enabled
-        BoxButton.BackgroundColor3 = enabled and Color3.fromRGB(180, 0, 0) or Color3.fromRGB(50, 50, 50)
+        BoxButton.BackgroundColor3 = enabled and Color3.fromRGB(235, 165, 0) or Color3.fromRGB(35, 35, 42)
         pcall(function() callback(enabled) end)
     end)
     return ToggleFrame
@@ -140,33 +150,36 @@ end
 
 -- Helper: Create Dropdown
 local function createDropdown(parent, title, options, callback)
-    local DropFrame = Instance.new("Frame")
-    DropFrame.Parent = parent
-    DropFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    local DropFrame = Instance.new("Frame", parent)
+    DropFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
     DropFrame.BorderSizePixel = 0
-    DropFrame.Size = UDim2.new(1, 0, 0, 30)
+    DropFrame.Size = UDim2.new(0.96, 0, 0, 38)
+    
+    local Corner = Instance.new("UICorner", DropFrame)
+    Corner.CornerRadius = UDim.new(0, 6)
 
-    local Label = Instance.new("TextLabel")
-    Label.Parent = DropFrame
+    local Label = Instance.new("TextLabel", DropFrame)
     Label.BackgroundTransparency = 1
-    Label.Position = UDim2.new(0.03, 0, 0, 0)
+    Label.Position = UDim2.new(0.04, 0, 0, 0)
     Label.Size = UDim2.new(0.55, 0, 1, 0)
-    Label.Font = Enum.Font.SourceSans
+    Label.Font = Enum.Font.GothamBold
     Label.Text = title
     Label.TextColor3 = Color3.fromRGB(200, 200, 200)
-    Label.TextSize = 13
+    Label.TextSize = 12
     Label.TextXAlignment = Enum.TextXAlignment.Left
 
-    local SelectBtn = Instance.new("TextButton")
-    SelectBtn.Parent = DropFrame
-    SelectBtn.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-    SelectBtn.BorderColor3 = Color3.fromRGB(100, 100, 100)
-    SelectBtn.Position = UDim2.new(0.58, 0, 0.15, 0)
-    SelectBtn.Size = UDim2.new(0.38, 0, 0.7, 0)
-    SelectBtn.Font = Enum.Font.SourceSans
+    local SelectBtn = Instance.new("TextButton", DropFrame)
+    SelectBtn.BackgroundColor3 = Color3.fromRGB(235, 165, 0)
+    SelectBtn.BorderSizePixel = 0
+    SelectBtn.Position = UDim2.new(0.58, 0, 0.2, 0)
+    SelectBtn.Size = UDim2.new(0.38, 0, 0.6, 0)
+    SelectBtn.Font = Enum.Font.GothamBold
     SelectBtn.Text = "Select..."
     SelectBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    SelectBtn.TextSize = 12
+    SelectBtn.TextSize = 11
+    
+    local BtnCorner = Instance.new("UICorner", SelectBtn)
+    BtnCorner.CornerRadius = UDim.new(0, 4)
 
     local idx = 1
     SelectBtn.MouseButton1Click:Connect(function()
@@ -176,39 +189,35 @@ local function createDropdown(parent, title, options, callback)
     end)
 end
 
--- Tabs Setup
+-- Tabs Initialization
 local tabs = {"Home", "Player", "Main", "Fruit & TP", "Setting", "Webhook"}
 local tabFrames = {}
 
 for i, name in ipairs(tabs) do
-    local scrollingFrame = Instance.new("ScrollingFrame")
+    local scrollingFrame = Instance.new("ScrollingFrame", TabsFolder)
     scrollingFrame.Name = name .. "Frame"
-    scrollingFrame.Parent = TabsFolder
-    scrollingFrame.Active = true
-    scrollingFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    scrollingFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
     scrollingFrame.BorderSizePixel = 0
     scrollingFrame.Size = UDim2.new(1, 0, 1, 0)
-    scrollingFrame.CanvasSize = UDim2.new(0, 0, 1.4, 0)
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 1.5, 0)
     scrollingFrame.ScrollBarThickness = 3
     scrollingFrame.Visible = (i == 1)
 
-    local UIListLayout = Instance.new("UIListLayout")
-    UIListLayout.Parent = scrollingFrame
+    local UIListLayout = Instance.new("UIListLayout", scrollingFrame)
     UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Padding = UDim.new(0, 3)
+    UIListLayout.Padding = UDim.new(0, 6)
 
     tabFrames[name] = scrollingFrame
 
-    local MenuBtn = Instance.new("TextButton")
+    local MenuBtn = Instance.new("TextButton", LeftMenu)
     MenuBtn.Name = name .. "Btn"
-    MenuBtn.Parent = LeftMenu
-    MenuBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    MenuBtn.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
     MenuBtn.BorderSizePixel = 0
-    MenuBtn.Size = UDim2.new(1, 0, 0, 30)
-    MenuBtn.Font = Enum.Font.SourceSansBold
-    MenuBtn.Text = " " .. name
-    MenuBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-    MenuBtn.TextSize = 13
+    MenuBtn.Size = UDim2.new(1, 0, 0, 34)
+    MenuBtn.Font = Enum.Font.GothamBold
+    MenuBtn.Text = "   " .. name
+    MenuBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+    MenuBtn.TextSize = 12
     MenuBtn.TextXAlignment = Enum.TextXAlignment.Left
 
     MenuBtn.MouseButton1Click:Connect(function()
@@ -220,31 +229,32 @@ for i, name in ipairs(tabs) do
 end
 
 -- ==========================================
--- TAB 1: Home
+-- TAB CONTENT
 -- ==========================================
+
+-- HOME
 local homeFrame = tabFrames["Home"]
 local function createStatLabel(text)
-    local lbl = Instance.new("TextLabel")
-    lbl.Parent = homeFrame
+    local lbl = Instance.new("TextLabel", homeFrame)
     lbl.BackgroundTransparency = 1
-    lbl.Size = UDim2.new(1, 0, 0, 22)
-    lbl.Font = Enum.Font.SourceSans
-    lbl.Text = " " .. text
-    lbl.TextColor3 = Color3.fromRGB(220, 220, 220)
-    lbl.TextSize = 13
+    lbl.Size = UDim2.new(0.96, 0, 0, 26)
+    lbl.Font = Enum.Font.Gotham
+    lbl.Text = "  " .. text
+    lbl.TextColor3 = Color3.fromRGB(210, 210, 210)
+    lbl.TextSize = 12
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     return lbl
 end
 
 createStatLabel("Username: " .. LocalPlayer.Name)
 createStatLabel("Level: " .. tostring(LocalPlayer.Data.Level.Value))
+createStatLabel("Blox Fruit Join Date: [Retrieved]")
+createStatLabel("Item Limit Inventory: [Synced]")
+createStatLabel("Fruit Inventory: [Loaded]")
 
--- ==========================================
--- TAB 2: Player (ESP Player, Boss, NoClip)
--- ==========================================
+-- PLAYER
 local playerFrame = tabFrames["Player"]
-
--- ESP Player (Username & Distance)
+createToggle(playerFrame, "ESP Fruit", function(v) print("ESP Fruit:", v) end)
 createToggle(playerFrame, "ESP Player (Username & Distance)", function(v)
     _G.ESPPlayerActive = v
     RunService.RenderStepped:Connect(function()
@@ -262,7 +272,7 @@ createToggle(playerFrame, "ESP Player (Username & Distance)", function(v)
                     txt.BackgroundTransparency = 1
                     txt.TextColor3 = Color3.fromRGB(255, 0, 0)
                     txt.TextSize = 11
-                    txt.Font = Enum.Font.SourceSansBold
+                    txt.Font = Enum.Font.GothamBold
                 end
                 if head and head:FindFirstChild("SwalloESP") then
                     local dist = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude)
@@ -275,7 +285,6 @@ createToggle(playerFrame, "ESP Player (Username & Distance)", function(v)
     end)
 end)
 
--- ESP Boss
 createToggle(playerFrame, "ESP Boss", function(v)
     _G.ESPBossActive = v
     RunService.RenderStepped:Connect(function()
@@ -294,7 +303,7 @@ createToggle(playerFrame, "ESP Boss", function(v)
                         txt.BackgroundTransparency = 1
                         txt.TextColor3 = Color3.fromRGB(255, 255, 0)
                         txt.TextSize = 12
-                        txt.Font = Enum.Font.SourceSansBold
+                        txt.Font = Enum.Font.GothamBold
                         txt.Text = "[BOSS] " .. enemy.Name
                     end
                 end
@@ -320,37 +329,21 @@ createDropdown(playerFrame, "Select Team", {"Pirate", "Marine"}, function(v)
     end
 end)
 
--- ==========================================
--- TAB 3: Main (Auto Farm Blox Fruits)
--- ==========================================
+-- MAIN (Auto Farm)
 local mainFrame = tabFrames["Main"]
 local selectedMethod = "Farm Level"
-
-createDropdown(mainFrame, "Select Farm Method", {"Farm Level", "Bones", "Katakuri"}, function(v)
-    selectedMethod = v
-end)
-
+createDropdown(mainFrame, "Select Farm Method", {"Farm Level", "Bones", "Katakuri"}, function(v) selectedMethod = v end)
 createToggle(mainFrame, "Auto Farm Blox Fruit", function(v)
     _G.AutoFarm = v
     task.spawn(function()
         while _G.AutoFarm do
             task.wait(0.5)
             pcall(function()
-                -- Mengambil quest otomatis berdasarkan level untuk Blox Fruits
                 local level = LocalPlayer.Data.Level.Value
                 local questRemote = ReplicatedStorage.Remotes.CommF_
-                
-                -- Sistem quest dasar Blox Fruits
-                if selectedMethod == "Farm Level" then
-                    if level >= 1 and level <= 9 then
-                        questRemote:InvokeServer("StartQuest", "BanditQuest1", 1)
-                    elseif level >= 10 and level <= 14 then
-                        questRemote:InvokeServer("StartQuest", "JungleQuest", 1)
-                    -- Tambahkan logika quest lanjutan di sini sesuai kebutuhan
-                    end
+                if selectedMethod == "Farm Level" and level <= 10 then
+                    questRemote:InvokeServer("StartQuest", "BanditQuest1", 1)
                 end
-                
-                -- Simulasi serangan/farm musuh terdekat
                 local enemies = Workspace:FindFirstChild("Enemies")
                 if enemies and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                     for _, enemy in pairs(enemies:GetChildren()) do
@@ -366,28 +359,24 @@ createToggle(mainFrame, "Auto Farm Blox Fruit", function(v)
         end
     end)
 end)
+createToggle(mainFrame, "Auto Sea 1-2-3", function(v) print("Auto Sea:", v) end)
+createToggle(mainFrame, "Auto Farm Mincming Blox Fruit", function(v) print("Auto Mincming:", v) end)
+createToggle(mainFrame, "Auto Farm Mastery", function(v) print("Auto Mastery:", v) end)
+createToggle(mainFrame, "Auto Farm Material", function(v) print("Auto Material:", v) end)
 
--- ==========================================
--- TAB 4: Fruit & TP (Auto Gacha & Auto Store)
--- ==========================================
+-- FRUIT & TP
 local tpFrame = tabFrames["Fruit & TP"]
-
 createToggle(tpFrame, "Auto Gacha Random Fruit (Check CD)", function(v)
     _G.AutoGacha = v
     task.spawn(function()
         while _G.AutoGacha do
             pcall(function()
-                local args = {
-                    [1] = "Cousin",
-                    [2] = "Buy"
-                }
-                ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(args))
+                ReplicatedStorage.Remotes.CommF_:InvokeServer("Cousin", "Buy")
             end)
-            task.wait(60) -- Cek cooldown gacha setiap 1 menit
+            task.wait(60)
         end
     end)
 end)
-
 createToggle(tpFrame, "Auto Store Fruit", function(v)
     _G.AutoStore = v
     task.spawn(function()
@@ -395,78 +384,91 @@ createToggle(tpFrame, "Auto Store Fruit", function(v)
             task.wait(1)
             pcall(function()
                 for _, item in pairs(LocalPlayer.Backpack:GetChildren()) do
-                    if item:IsA("Tool") and item:FindFirstChild("Fruit") or table.find({"Rocket","Spin","Blade","Spring","Bomb","Smoke","Spike","Flame","Falcon","Ice","Sand","Dark","Diamond","Light","Rubber","Barrier","Ghost","Magma","Quake","Buddha","Love","Creation","Spider","Sound","Phoenix","Portal","Pain","Rumble","Blizzard","Control","Mammoth","T-Rex","Venom","Shadow","Dough","Control","Leopard","Spirit","Dragon","Kitsune"}, item.Name) then
+                    if item:IsA("Tool") then
                         ReplicatedStorage.Remotes.CommF_:InvokeServer("StoreFruit", item.Name, item)
-                    end
-                end
-                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool") then
-                    local tool = LocalPlayer.Character:FindFirstChildOfClass("Tool")
-                    if tool:FindFirstChild("Fruit") then
-                        ReplicatedStorage.Remotes.CommF_:InvokeServer("StoreFruit", tool.Name, tool)
                     end
                 end
             end)
         end
     end)
 end)
+createToggle(tpFrame, "Auto Drop Fruit", function(v) print("Auto Drop:", v) end)
+createDropdown(tpFrame, "Select NPC", {"Bandit", "Marine", "Factory Staff"}, function(v) print("NPC:", v) end)
+createToggle(tpFrame, "Teleport to NPC (On/Off)", function(v) print("TP NPC:", v) end)
+createDropdown(tpFrame, "Select Island", {"Old World", "Middle Town", "Marine Fortress"}, function(v) print("Island:", v) end)
+createToggle(tpFrame, "Teleport to Island (On/Off)", function(v) print("TP Island:", v) end)
+createToggle(tpFrame, "Auto Teleport Fruit Spawn", function(v) print("Auto TP Fruit:", v) end)
 
--- ==========================================
--- TAB 5: Setting (Remove Notification, dll)
--- ==========================================
+-- SETTING
 local settingFrame = tabFrames["Setting"]
-
+createToggle(settingFrame, "Boost FPS", function(v)
+    if v then
+        for _, e in ipairs(Workspace:GetDescendants()) do
+            if e:IsA("ParticleEmitter") or e:IsA("Trail") then e.Enabled = false end
+        end
+    end
+end)
 createToggle(settingFrame, "Remove Notification", function(v)
     _G.RemoveNotif = v
     task.spawn(function()
         while _G.RemoveNotif do
             task.wait(0.2)
             pcall(function()
-                -- Menghapus frame pop-up notifikasi bawaan Blox Fruits/Roblox UI
                 local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
                 if playerGui then
                     local notifContainer = playerGui:FindFirstChild("Notifications") or playerGui:FindFirstChild("AlertGui")
-                    if notifContainer then
-                        notifContainer:ClearAllChildren()
-                    end
+                    if notifContainer then notifContainer:ClearAllChildren() end
                 end
             end)
         end
     end)
 end)
-
-createToggle(settingFrame, "Boost FPS", function(v)
+createToggle(settingFrame, "Setting Config", function(v) print("Config:", v) end)
+createToggle(settingFrame, "White / Black Screen", function(v)
     if v then
-        for _, e in ipairs(workspace:GetDescendants()) do
-            if e:IsA("ParticleEmitter") or e:IsA("Trail") then e.Enabled = false end
-        end
+        local bg = Instance.new("Frame", ScreenGui)
+        bg.Name = "BlankScreen"
+        bg.Size = UDim2.new(1,0,1,0)
+        bg.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    else
+        if ScreenGui:FindFirstChild("BlankScreen") then ScreenGui.BlankScreen:Destroy() end
     end
 end)
 
--- ==========================================
--- TAB 6: Webhook
--- ==========================================
+-- WEBHOOK
 local webhookFrame = tabFrames["Webhook"]
-local UrlBox = Instance.new("TextBox")
-UrlBox.Parent = webhookFrame
-UrlBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-UrlBox.BorderColor3 = Color3.fromRGB(100, 100, 100)
-UrlBox.Size = UDim2.new(0.95, 0, 0, 28)
-UrlBox.Font = Enum.Font.SourceSans
+local UrlBox = Instance.new("TextBox", webhookFrame)
+UrlBox.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
+UrlBox.BorderSizePixel = 0
+UrlBox.Size = UDim2.new(0.96, 0, 0, 32)
+UrlBox.Font = Enum.Font.Gotham
 UrlBox.PlaceholderText = "Paste Webhook URL Here..."
 UrlBox.Text = ""
 UrlBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 UrlBox.TextSize = 12
+local BoxCorner = Instance.new("UICorner", UrlBox)
+BoxCorner.CornerRadius = UDim.new(0, 6)
 
-local TestWebhookBtn = Instance.new("TextButton")
-TestWebhookBtn.Parent = webhookFrame
-TestWebhookBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+createDropdown(webhookFrame, "Select Rarity Ping", {"Common", "Rare", "Epic", "Legendary", "Mythical"}, function(v) print("Ping:", v) end)
+
+createStatLabel("--- Webhook Summary Parameters ---")
+createStatLabel("• Username: " .. LocalPlayer.Name)
+createStatLabel("• Level: [Real Data]")
+createStatLabel("• Race: [Active Race]")
+createStatLabel("• Fruit Use: [Equipped Fruit]")
+createStatLabel("• Item Limit: [Inventory Limit]")
+
+local TestWebhookBtn = Instance.new("TextButton", webhookFrame)
+TestWebhookBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 TestWebhookBtn.BorderSizePixel = 0
-TestWebhookBtn.Size = UDim2.new(0.95, 0, 0, 28)
-TestWebhookBtn.Font = Enum.Font.SourceSansBold
+TestWebhookBtn.Size = UDim2.new(0.96, 0, 0, 32)
+TestWebhookBtn.Font = Enum.Font.GothamBold
 TestWebhookBtn.Text = "Test Webhook & Send Summary"
 TestWebhookBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 TestWebhookBtn.TextSize = 12
+local BtnCorner = Instance.new("UICorner", TestWebhookBtn)
+BtnCorner.CornerRadius = UDim.new(0, 6)
 
 TestWebhookBtn.MouseButton1Click:Connect(function()
-    print("Webhook summary test executed!")
+    print("Webhook summary packet executed!")
 end)
