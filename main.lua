@@ -223,4 +223,5 @@ FruitTab:AddToggle({
     end    
 })
 
+-- WAJIB ADA AGAR UI MUNCUL
 OrionLib:Init()
