@@ -1,203 +1,125 @@
--- ==========================================
--- SWALLO HUB LUA - CUSTOM UI (TANPA ORION)
--- ==========================================
+-- Swallo Hub - Blox Fruit (Red Theme)
+-- Menggunakan Rayfield UI Library sebagai contoh dasar struktur UI Roblox yang bersih dan rapi.
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local CoreGui = game:GetService("CoreGui")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-if CoreGui:FindFirstChild("SwalloHubCustom") then
-    CoreGui.SwalloHubCustom:Destroy()
-end
+local Window = Rayfield:CreateWindow({
+   Name = "Swallo Hub - Blox Fruit",
+   LoadingTitle = "Swallo Hub is Loading...",
+   LoadingSubtitle = "by Swallo",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "SwalloHub",
+      FileName = "BloxFruitConfig"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvite",
+      RememberJoins = true
+   },
+   KeySystem = false,
+   Theme = "Default" -- Bisa disesuaikan atau menggunakan kustomisasi warna merah di bawah
+})
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "SwalloHubCustom"
-ScreenGui.Parent = CoreGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+-- Mengubah aksen warna menjadi Merah
+-- Rayfield mendukung kustomisasi tema secara langsung
+Window.Background = Color3.fromRGB(20, 20, 20)
+Window.Main = Color3.fromRGB(30, 30, 30)
+Window.Accent = Color3.fromRGB(255, 0, 0) -- Warna Merah Utama
+Window.TextColor = Color3.fromRGB(255, 255, 255)
 
--- Main Frame (Clean Modern UI)
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Name = "MainFrame"
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-MainFrame.BorderColor3 = Color3.fromRGB(180, 0, 0)
-MainFrame.BorderSizePixel = 1
-MainFrame.Position = UDim2.new(0.5, -275, 0.5, -175)
-MainFrame.Size = UDim2.new(0, 550, 0, 350)
-MainFrame.Active = true
-MainFrame.Draggable = true
+-- Tab: Sea Event (Sesuai dengan gambar)
+local SeaEventTab = Window:CreateTab("Sea Event", 4483362458)
 
-local MainCorner = Instance.new("UICorner", MainFrame)
-MainCorner.CornerRadius = UDim.new(0, 6)
+local SeaSection = SeaEventTab:CreateSection("Sea Event Tab")
 
--- Top Bar
-local TopBar = Instance.new("Frame", MainFrame)
-TopBar.BackgroundColor3 = Color3.fromRGB(140, 0, 0)
-TopBar.BorderSizePixel = 0
-TopBar.Size = UDim2.new(1, 0, 0, 30)
+SeaEventTab:CreateButton({
+   Name = "Refresh Player",
+   Callback = function()
+      print("Player Refreshed")
+   end,
+})
 
-local TopCorner = Instance.new("UICorner", TopBar)
-TopCorner.CornerRadius = UDim.new(0, 6)
+SeaEventTab:CreateToggle({
+   Name = "Auto Sea Event With Friend",
+   CurrentValue = false,
+   Flag = "AutoSeaFriend",
+   Callback = function(Value)
+      print("Auto Sea Event With Friend: " .. tostring(Value))
+   end,
+})
 
-local Title = Instance.new("TextLabel", TopBar)
-Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0.03, 0, 0, 0)
-Title.Size = UDim2.new(0.6, 0, 1, 0)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "Swallo Hub - Blox Fruits"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 13
-Title.TextXAlignment = Enum.TextXAlignment.Left
+SeaEventTab:CreateToggle({
+   Name = "Auto Repair Ur Ship",
+   CurrentValue = false,
+   Flag = "AutoRepair",
+   Callback = function(Value)
+      print("Auto Repair Ur Ship: " .. tostring(Value))
+   end,
+})
 
--- Floating Toggle Button (Bisa digeser dan untuk Buka/Tutup UI)
-local FloatingBtn = Instance.new("TextButton", ScreenGui)
-FloatingBtn.BackgroundColor3 = Color3.fromRGB(140, 0, 0)
-FloatingBtn.BorderSizePixel = 0
-FloatingBtn.Position = UDim2.new(0, 15, 0.5, -20)
-FloatingBtn.Size = UDim2.new(0, 45, 0, 45)
-FloatingBtn.Font = Enum.Font.GothamBold
-FloatingBtn.Text = "Open"
-FloatingBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-FloatingBtn.TextSize = 11
-FloatingBtn.Active = true
-FloatingBtn.Draggable = true
+SeaEventTab:CreateToggle({
+   Name = "Auto Sea Event",
+   CurrentValue = true,
+   Flag = "AutoSeaEvent",
+   Callback = function(Value)
+      print("Auto Sea Event: " .. tostring(Value))
+   end,
+})
 
-local FloatCorner = Instance.new("UICorner", FloatingBtn)
-FloatCorner.CornerRadius = UDim.new(0, 8)
+SeaEventTab:CreateToggle({
+   Name = "Auto Find Mirage",
+   CurrentValue = false,
+   Flag = "AutoMirage",
+   Callback = function(Value)
+      print("Auto Find Mirage: " .. tostring(Value))
+   end,
+})
 
-local isMenuOpen = true
-FloatingBtn.MouseButton1Click:Connect(function()
-    isMenuOpen = not isMenuOpen
-    MainFrame.Visible = isMenuOpen
-    FloatingBtn.Text = isMenuOpen and "Close" or "Open"
-end)
+-- Section: Kitsune Event
+local KitsuneSection = SeaEventTab:CreateSection("Kitsune Event")
 
--- Left Sidebar Menu
-local LeftMenu = Instance.new("ScrollingFrame", MainFrame)
-LeftMenu.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-LeftMenu.BorderSizePixel = 0
-LeftMenu.Position = UDim2.new(0, 0, 0, 30)
-LeftMenu.Size = UDim2.new(0, 140, 1, -30)
-LeftMenu.CanvasSize = UDim2.new(0, 0, 1.2, 0)
-LeftMenu.ScrollBarThickness = 2
+SeaEventTab:CreateToggle({
+   Name = "Teleport To Kitsune Island",
+   CurrentValue = false,
+   Flag = "TeleportKitsune",
+   Callback = function(Value)
+      print("Teleport To Kitsune Island: " .. tostring(Value))
+   end,
+})
 
-local UIListLayout_Menu = Instance.new("UIListLayout", LeftMenu)
-UIListLayout_Menu.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_Menu.Padding = UDim.new(0, 3)
+SeaEventTab:CreateToggle({
+   Name = "Hop Server [ Next Night or Near Full Moon > 2m ]",
+   CurrentValue = false,
+   Flag = "HopMoon",
+   Callback = function(Value)
+      print("Hop Server Moon: " .. tostring(Value))
+   end,
+})
 
--- Right Container Panel
-local RightContainer = Instance.new("Frame", MainFrame)
-RightContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
-RightContainer.BorderSizePixel = 0
-RightContainer.Position = UDim2.new(0, 140, 0, 30)
-RightContainer.Size = UDim2.new(1, -140, 1, -30)
+-- Tab Tambahan Sesuai Menu di Gambar
+local FarmingTab = Window:CreateTab("Farming Other", 4483362458)
+FarmingTab:CreateSection("Farming Menu")
 
-local TabsFolder = Instance.new("Folder", RightContainer)
+local FruitTab = Window:CreateTab("Fruit and Raid, Dunge", 4483362458)
+FruitTab:CreateSection("Fruit & Dungeon Menu")
 
--- Helper: Create Toggle Component
-local function createToggle(parent, text, callback)
-    local ToggleFrame = Instance.new("Frame", parent)
-    ToggleFrame.BackgroundColor3 = Color3.fromRGB(38, 38, 46)
-    ToggleFrame.BorderSizePixel = 0
-    ToggleFrame.Size = UDim2.new(0.96, 0, 0, 32)
-    
-    local Corner = Instance.new("UICorner", ToggleFrame)
-    Corner.CornerRadius = UDim.new(0, 4)
+local RaceTab = Window:CreateTab("Upgrade Race", 4483362458)
+RaceTab:CreateSection("Race Upgrade Menu")
 
-    local TextLabel = Instance.new("TextLabel", ToggleFrame)
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.Position = UDim2.new(0.04, 0, 0, 0)
-    TextLabel.Size = UDim2.new(0.75, 0, 1, 0)
-    TextLabel.Font = Enum.Font.Gotham
-    TextLabel.Text = text
-    TextLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
-    TextLabel.TextSize = 11
-    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+local ItemTab = Window:CreateTab("Get and Upgrade Item", 4483362458)
+ItemTab:CreateSection("Item Menu")
 
-    local BoxButton = Instance.new("TextButton", ToggleFrame)
-    BoxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-    BoxButton.BorderSizePixel = 0
-    BoxButton.Position = UDim2.new(0.85, 0, 0.15, 0)
-    BoxButton.Size = UDim2.new(0, 22, 0, 22)
-    BoxButton.Text = ""
-    
-    local BoxCorner = Instance.new("UICorner", BoxButton)
-    BoxCorner.CornerRadius = UDim.new(0, 4)
+local VolcanoTab = Window:CreateTab("Volcano Event", 4483362458)
+VolcanoTab:CreateSection("Volcano Event Menu")
 
-    local enabled = false
-    BoxButton.MouseButton1Click:Connect(function()
-        enabled = not enabled
-        BoxButton.BackgroundColor3 = enabled and Color3.fromRGB(180, 0, 0) or Color3.fromRGB(50, 50, 60)
-        pcall(function() callback(enabled) end)
-    end)
-    return ToggleFrame
-end
+local ESPTab = Window:CreateTab("ESP", 4483362458)
+ESPTab:CreateSection("ESP Menu")
 
--- Setup Tabs System
-local tabs = {"Home", "Player", "Auto Farm", "Fruit Settings"}
-local tabFrames = {}
+local PVPTab = Window:CreateTab("PVP", 4483362458)
+PVPTab:CreateSection("PVP Menu")
 
-for i, name in ipairs(tabs) do
-    local scrollingFrame = Instance.new("ScrollingFrame", TabsFolder)
-    scrollingFrame.Name = name .. "Frame"
-    scrollingFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
-    scrollingFrame.BorderSizePixel = 0
-    scrollingFrame.Size = UDim2.new(1, 0, 1, 0)
-    scrollingFrame.CanvasSize = UDim2.new(0, 0, 1.4, 0)
-    scrollingFrame.ScrollBarThickness = 2
-    scrollingFrame.Visible = (i == 1)
+local WebhookTab = Window:CreateTab("Tab Webhook", 4483362458)
+WebhookTab:CreateSection("Webhook Settings")
 
-    local UIListLayout = Instance.new("UIListLayout", scrollingFrame)
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Padding = UDim.new(0, 5)
-
-    tabFrames[name] = scrollingFrame
-
-    local MenuBtn = Instance.new("TextButton", LeftMenu)
-    MenuBtn.Name = name .. "Btn"
-    MenuBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-    MenuBtn.BorderSizePixel = 0
-    MenuBtn.Size = UDim2.new(1, 0, 0, 32)
-    MenuBtn.Font = Enum.Font.GothamBold
-    MenuBtn.Text = "  " .. name
-    MenuBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
-    MenuBtn.TextSize = 11
-    MenuBtn.TextXAlignment = Enum.TextXAlignment.Left
-
-    MenuBtn.MouseButton1Click:Connect(function()
-        for _, frame in pairs(tabFrames) do
-            frame.Visible = false
-        end
-        scrollingFrame.Visible = true
-    end)
-end
-
--- TAB 1: Home
-local homeFrame = tabFrames["Home"]
-local function createStatLabel(text)
-    local lbl = Instance.new("TextLabel", homeFrame)
-    lbl.BackgroundTransparency = 1
-    lbl.Size = UDim2.new(0.96, 0, 0, 25)
-    lbl.Font = Enum.Font.Gotham
-    lbl.Text = "  " .. text
-    lbl.TextColor3 = Color3.fromRGB(200, 200, 200)
-    lbl.TextSize = 11
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    return lbl
-end
-createStatLabel("Username: " .. LocalPlayer.Name)
-createStatLabel("Level: [Ready]")
-
--- TAB 2: Player
-local playerFrame = tabFrames["Player"]
-createToggle(playerFrame, "No Clip [Contoh]", function(v) print("NoClip:", v) end)
-
--- TAB 3: Auto Farm
-local farmFrame = tabFrames["Auto Farm"]
-createToggle(farmFrame, "Enable Auto Farm Level [Contoh]", function(v) print("AutoFarm:", v) end)
-
--- TAB 4: Fruit Settings
-local fruitFrame = tabFrames["Fruit Settings"]
-createToggle(fruitFrame, "Auto Roll / Gacha Fruit [Contoh]", function(v) print("Gacha:", v) end)
-createToggle(fruitFrame, "Auto Store Fruit [Contoh]", function(v) print("Store:", v) end)
+Rayfield:LoadConfiguration()
