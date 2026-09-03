@@ -1,5 +1,5 @@
 -- ==========================================
--- SWALLO HUB LUA - MODERN RED UI STYLE (BANANA CAT HUB STYLE)
+-- SWALLO HUB LUA - INTEGRATED AUTO FARM & CUSTOM UI
 -- ==========================================
 
 local Players = game:GetService("Players")
@@ -8,6 +8,7 @@ local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local VirtualUser = game:GetService("VirtualUser")
 
 if CoreGui:FindFirstChild("SwalloHub") then
     CoreGui.SwalloHub:Destroy()
@@ -17,6 +18,13 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "SwalloHub"
 ScreenGui.Parent = CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Anti AFK
+LocalPlayer.Idled:Connect(function()
+    VirtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+    task.wait(1)
+    VirtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+end)
 
 -- Main Container (Dark Rounded Style with Red Border)
 local MainFrame = Instance.new("Frame")
@@ -107,7 +115,7 @@ RightContainer.Size = UDim2.new(1, -175, 1, -32)
 
 local TabsFolder = Instance.new("Folder", RightContainer)
 
--- Helper: Create Square Toggle Box (Seperti di Gambar Referensi)
+-- Helper: Create Square Toggle Box
 local function createToggle(parent, text, callback)
     local ToggleFrame = Instance.new("Frame", parent)
     ToggleFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
@@ -127,7 +135,6 @@ local function createToggle(parent, text, callback)
     TextLabel.TextSize = 12
     TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Kotak Toggle Kuning/Oranye khas UI Referensi
     local BoxButton = Instance.new("TextButton", ToggleFrame)
     BoxButton.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
     BoxButton.BorderColor3 = Color3.fromRGB(180, 130, 0)
@@ -229,7 +236,7 @@ for i, name in ipairs(tabs) do
 end
 
 -- ==========================================
--- TAB CONTENT
+-- TAB CONTENT INTEGRATION
 -- ==========================================
 
 -- HOME
@@ -329,35 +336,97 @@ createDropdown(playerFrame, "Select Team", {"Pirate", "Marine"}, function(v)
     end
 end)
 
--- MAIN (Auto Farm)
+-- MAIN (Auto Farm Logic Integration)
 local mainFrame = tabFrames["Main"]
-local selectedMethod = "Farm Level"
-createDropdown(mainFrame, "Select Farm Method", {"Farm Level", "Bones", "Katakuri"}, function(v) selectedMethod = v end)
-createToggle(mainFrame, "Auto Farm Blox Fruit", function(v)
-    _G.AutoFarm = v
-    task.spawn(function()
-        while _G.AutoFarm do
-            task.wait(0.5)
+
+-- Fungsi GetFarmData & EquipWeapon dari script farm.txt
+local function GetFarmData()
+    local level = LocalPlayer.Data.Level.Value
+    local questData = {}
+
+    if level >= 1 and level <= 14 then
+        questData.QuestName = "BanditQuest1"
+        questData.LevelReq = 1
+        questData.MobName = "Bandit"
+        questData.CFrameQuest = CFrame.new(1059, 16, 1549)
+        questData.CFrameMob = CFrame.new(1145, 17, 1634)
+    elseif level >= 15 and level <= 29 then
+        questData.QuestName = "JungleQuest"
+        questData.LevelReq = 1
+        questData.MobName = "Monkey"
+        questData.CFrameQuest = CFrame.new(-1601, 37, 153)
+        questData.CFrameMob = CFrame.new(-1620, 22, 142)
+    elseif level >= 30 and level <= 59 then
+        questData.QuestName = "JungleQuest"
+        questData.LevelReq = 2
+        questData.MobName = "Gorilla"
+        questData.CFrameQuest = CFrame.new(-1601, 37, 153)
+        questData.CFrameMob = CFrame.new(-1237, 6, -486)
+    elseif level >= 60 then
+        questData.QuestName = "BuggyQuest1"
+        questData.LevelReq = 1
+        questData.MobName = "Pirate"
+        questData.CFrameQuest = CFrame.new(-1140, 4, 3828)
+        questData.CFrameMob = CFrame.new(-1212, 4, 3915)
+    end
+    return questData
+end
+
+local function EquipWeapon()
+    for _, item in pairs(LocalPlayer.Backpack:GetChildren()) do
+        if item:IsA("Tool") and (item.ToolTip == "Melee" or item.ToolTip == "Blox Fruit" or item.ToolTip == "Sword") then
+            LocalPlayer.Character.Humanoid:EquipTool(item)
+            break
+        end
+    end
+end
+
+-- Integrasi Auto Farm Level Loop
+_G.AutoFarmLevel = false
+spawn(function()
+    while task.wait() do
+        if _G.AutoFarmLevel then
             pcall(function()
-                local level = LocalPlayer.Data.Level.Value
-                local questRemote = ReplicatedStorage.Remotes.CommF_
-                if selectedMethod == "Farm Level" and level <= 10 then
-                    questRemote:InvokeServer("StartQuest", "BanditQuest1", 1)
-                end
-                local enemies = Workspace:FindFirstChild("Enemies")
-                if enemies and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    for _, enemy in pairs(enemies:GetChildren()) do
-                        if enemy:FindFirstChild("HumanoidRootPart") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                            if (LocalPlayer.Character.HumanoidRootPart.Position - enemy.HumanoidRootPart.Position).Magnitude < 350 then
-                                LocalPlayer.Character.HumanoidRootPart.CFrame = enemy.HumanoidRootPart.CFrame * CFrame.new(0, 30, 3)
-                                game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-                            end
+                local data = GetFarmData()
+                if not data.QuestName then return end
+                local hasQuest = LocalPlayer.PlayerGui.Main:FindFirstChild("Quest") and LocalPlayer.PlayerGui.Main.Quest.Visible
+
+                if not hasQuest then
+                    if (LocalPlayer.Character.HumanoidRootPart.Position - data.CFrameQuest.Position).Magnitude > 15 then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = data.CFrameQuest
+                    else
+                        local args = {
+                            [1] = "StartQuest",
+                            [2] = data.QuestName,
+                            [3] = data.LevelReq
+                        }
+                        ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(args))
+                    end
+                else
+                    local mobFound = false
+                    for _, v in pairs(Workspace.Enemies:GetChildren()) do
+                        if v.Name == data.MobName and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") then
+                            mobFound = true
+                            EquipWeapon()
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 7, 0)
+                            
+                            VirtualUser:CaptureController()
+                            VirtualUser:ClickButton1(Vector2.new())
+                            break
                         end
+                    end
+                    
+                    if not mobFound then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = data.CFrameMob
                     end
                 end
             end)
         end
-    end)
+    end
+end)
+
+createToggle(mainFrame, "Auto Farm Level", function(v)
+    _G.AutoFarmLevel = v
 end)
 createToggle(mainFrame, "Auto Sea 1-2-3", function(v) print("Auto Sea:", v) end)
 createToggle(mainFrame, "Auto Farm Mincming Blox Fruit", function(v) print("Auto Mincming:", v) end)
