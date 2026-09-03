@@ -1,125 +1,190 @@
--- Swallo Hub - Blox Fruit (Red Theme)
--- Menggunakan Rayfield UI Library sebagai contoh dasar struktur UI Roblox yang bersih dan rapi.
+-- Swallo Hub - Blox Fruit (Red Theme & Draggable/Toggleable)
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
 
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+-- Membuat ScreenGui Utama
+local SwalloHub = Instance.new("ScreenGui")
+SwalloHub.Name = "SwalloHub"
+SwalloHub.Parent = CoreGui
+SwalloHub.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-local Window = Rayfield:CreateWindow({
-   Name = "Swallo Hub - Blox Fruit",
-   LoadingTitle = "Swallo Hub is Loading...",
-   LoadingSubtitle = "by Swallo",
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = "SwalloHub",
-      FileName = "BloxFruitConfig"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvite",
-      RememberJoins = true
-   },
-   KeySystem = false,
-   Theme = "Default" -- Bisa disesuaikan atau menggunakan kustomisasi warna merah di bawah
-})
+-- Main Frame (Jendela Utama)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = SwalloHub
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+MainFrame.BorderSizePixel = 2
+MainFrame.Position = UDim2.new(0.5, -275, 0.5, -175)
+MainFrame.Size = UDim2.new(0, 550, 0, 350)
+MainFrame.Active = true
+MainFrame.Draggable = true -- Membuat UI bisa digeser (Draggable)
 
--- Mengubah aksen warna menjadi Merah
--- Rayfield mendukung kustomisasi tema secara langsung
-Window.Background = Color3.fromRGB(20, 20, 20)
-Window.Main = Color3.fromRGB(30, 30, 30)
-Window.Accent = Color3.fromRGB(255, 0, 0) -- Warna Merah Utama
-Window.TextColor = Color3.fromRGB(255, 255, 255)
+-- Top Bar / Header
+local TopBar = Instance.new("Frame")
+TopBar.Name = "TopBar"
+TopBar.Parent = MainFrame
+TopBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+TopBar.BorderSizePixel = 0
+TopBar.Size = UDim2.new(1, 0, 0, 35)
 
--- Tab: Sea Event (Sesuai dengan gambar)
-local SeaEventTab = Window:CreateTab("Sea Event", 4483362458)
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Size = UDim2.new(0, 300, 1, 0)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "Swallo Hub - Blox Fruit"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
-local SeaSection = SeaEventTab:CreateSection("Sea Event Tab")
+-- Tombol Close / Minimize di Pojok Kanan Atas
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Parent = TopBar
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+MinimizeButton.BorderSizePixel = 0
+MinimizeButton.Position = UDim2.new(1, -35, 0, 5)
+MinimizeButton.Size = UDim2.new(0, 30, 0, 25)
+MinimizeButton.Font = Enum.Font.SourceSansBold
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.TextSize = 18
 
-SeaEventTab:CreateButton({
-   Name = "Refresh Player",
-   Callback = function()
-      print("Player Refreshed")
-   end,
-})
+-- Konten Area / Sidebar & Panel
+local Sidebar = Instance.new("ScrollingFrame")
+Sidebar.Name = "Sidebar"
+Sidebar.Parent = MainFrame
+Sidebar.Active = true
+Sidebar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Sidebar.BorderSizePixel = 0
+Sidebar.Position = UDim2.new(0, 0, 0, 35)
+Sidebar.Size = UDim2.new(0, 160, 1, -35)
+Sidebar.CanvasSize = UDim2.new(0, 0, 2, 0)
+Sidebar.ScrollBarThickness = 4
 
-SeaEventTab:CreateToggle({
-   Name = "Auto Sea Event With Friend",
-   CurrentValue = false,
-   Flag = "AutoSeaFriend",
-   Callback = function(Value)
-      print("Auto Sea Event With Friend: " .. tostring(Value))
-   end,
-})
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = Sidebar
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
 
-SeaEventTab:CreateToggle({
-   Name = "Auto Repair Ur Ship",
-   CurrentValue = false,
-   Flag = "AutoRepair",
-   Callback = function(Value)
-      print("Auto Repair Ur Ship: " .. tostring(Value))
-   end,
-})
+-- Fungsi untuk membuat tombol menu di Sidebar
+local function createMenuButton(name, order)
+	local btn = Instance.new("TextButton")
+	btn.Name = name
+	btn.Parent = Sidebar
+	btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	btn.BorderSizePixel = 0
+	btn.Size = UDim2.new(1, 0, 0, 35)
+	btn.Font = Enum.Font.SourceSans
+	btn.Text = "  " .. name
+	btn.TextColor3 = Color3.fromRGB(220, 220, 220)
+	btn.TextSize = 14
+	btn.TextXAlignment = Enum.TextXAlignment.Left
+	btn.LayoutOrder = order
+	return btn
+end
 
-SeaEventTab:CreateToggle({
-   Name = "Auto Sea Event",
-   CurrentValue = true,
-   Flag = "AutoSeaEvent",
-   Callback = function(Value)
-      print("Auto Sea Event: " .. tostring(Value))
-   end,
-})
+-- Menu Sesuai Gambar
+createMenuButton("Farming Other", 1)
+createMenuButton("Fruit and Raid, Dunge", 2)
+createMenuButton("Sea Event", 3)
+createMenuButton("Upgrade Race", 4)
+createMenuButton("Get and Upgrade Item", 5)
+createMenuButton("Volcano Event", 6)
+createMenuButton("ESP", 7)
+createMenuButton("PVP", 8)
+createMenuButton("Tab Webhook", 9)
 
-SeaEventTab:CreateToggle({
-   Name = "Auto Find Mirage",
-   CurrentValue = false,
-   Flag = "AutoMirage",
-   Callback = function(Value)
-      print("Auto Find Mirage: " .. tostring(Value))
-   end,
-})
+-- Container Konten Kanan (Area Fitur Sea Event sebagai contoh)
+local Container = Instance.new("ScrollingFrame")
+Container.Name = "Container"
+Container.Parent = MainFrame
+Container.Active = true
+Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Container.BorderSizePixel = 0
+Container.Position = UDim2.new(0, 160, 0, 35)
+Container.Size = UDim2.new(1, -160, 1, -35)
+Container.CanvasSize = UDim2.new(0, 0, 1.5, 0)
+Container.ScrollBarThickness = 6
 
--- Section: Kitsune Event
-local KitsuneSection = SeaEventTab:CreateSection("Kitsune Event")
+local ContainerLayout = Instance.new("UIListLayout")
+ContainerLayout.Parent = Container
+ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ContainerLayout.Padding = UDim.new(0, 8)
 
-SeaEventTab:CreateToggle({
-   Name = "Teleport To Kitsune Island",
-   CurrentValue = false,
-   Flag = "TeleportKitsune",
-   Callback = function(Value)
-      print("Teleport To Kitsune Island: " .. tostring(Value))
-   end,
-})
+-- Header Section di dalam Konten
+local function createSectionHeader(text)
+	local label = Instance.new("TextLabel")
+	label.Parent = Container
+	label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	label.BorderSizePixel = 0
+	label.Size = UDim2.new(1, 0, 0, 30)
+	label.Font = Enum.Font.SourceSansBold
+	label.Text = "  " .. text
+	label.TextColor3 = Color3.fromRGB(255, 100, 100)
+	label.TextSize = 14
+	label.TextXAlignment = Enum.TextXAlignment.Left
+end
 
-SeaEventTab:CreateToggle({
-   Name = "Hop Server [ Next Night or Near Full Moon > 2m ]",
-   CurrentValue = false,
-   Flag = "HopMoon",
-   Callback = function(Value)
-      print("Hop Server Moon: " .. tostring(Value))
-   end,
-})
+-- Tombol Fitur / Toggle dalam List
+local function createToggleFeature(text, defaultState)
+	local frame = Instance.new("Frame")
+	frame.Parent = Container
+	frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	frame.BorderSizePixel = 0
+	frame.Size = UDim2.new(1, 0, 0, 40)
 
--- Tab Tambahan Sesuai Menu di Gambar
-local FarmingTab = Window:CreateTab("Farming Other", 4483362458)
-FarmingTab:CreateSection("Farming Menu")
+	local label = Instance.new("TextLabel")
+	label.Parent = frame
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0, 10, 0, 0)
+	label.Size = UDim2.new(0.8, 0, 1, 0)
+	label.Font = Enum.Font.SourceSansBold
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.TextSize = 14
+	label.TextXAlignment = Enum.TextXAlignment.Left
 
-local FruitTab = Window:CreateTab("Fruit and Raid, Dunge", 4483362458)
-FruitTab:CreateSection("Fruit & Dungeon Menu")
+	local toggleBtn = Instance.new("TextButton")
+	toggleBtn.Parent = frame
+	toggleBtn.BackgroundColor3 = defaultState and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(50, 50, 50)
+	toggleBtn.Position = UDim2.new(1, -45, 0.5, -12)
+	toggleBtn.Size = UDim2.new(0, 35, 0, 24)
+	toggleBtn.Text = ""
+	
+	local active = defaultState
+	toggleBtn.MouseButton1Click:Connect(function()
+		active = not active
+		toggleBtn.BackgroundColor3 = active and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(50, 50, 50)
+	end)
+end
 
-local RaceTab = Window:CreateTab("Upgrade Race", 4483362458)
-RaceTab:CreateSection("Race Upgrade Menu")
+-- Menambahkan elemen menu Sea Event
+createSectionHeader("Sea Event Tab")
+createToggleFeature("Refresh Player", false)
+createToggleFeature("Auto Sea Event With Friend", false)
+createToggleFeature("Auto Repair Ur Ship", false)
+createToggleFeature("Auto Sea Event", true)
+createToggleFeature("Auto Find Mirage", false)
 
-local ItemTab = Window:CreateTab("Get and Upgrade Item", 4483362458)
-ItemTab:CreateSection("Item Menu")
+createSectionHeader("Kitsune Event")
+createToggleFeature("Teleport To Kitsune Island", false)
+createToggleFeature("Hop Server [ Next Night / Full Moon ]", false)
 
-local VolcanoTab = Window:CreateTab("Volcano Event", 4483362458)
-VolcanoTab:CreateSection("Volcano Event Menu")
+-- Fitur Buka Tutup (Minimize / Open Close) via Tombol Kiri Atas (-) dan Tombol Keyboard (Insert / RightShift)
+local isOpen = true
+MinimizeButton.MouseButton1Click:Connect(function()
+	isOpen = not isOpen
+	MainFrame.Visible = isOpen
+end)
 
-local ESPTab = Window:CreateTab("ESP", 4483362458)
-ESPTab:CreateSection("ESP Menu")
-
-local PVPTab = Window:CreateTab("PVP", 4483362458)
-PVPTab:CreateSection("PVP Menu")
-
-local WebhookTab = Window:CreateTab("Tab Webhook", 4483362458)
-WebhookTab:CreateSection("Webhook Settings")
-
-Rayfield:LoadConfiguration()
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if input.KeyCode == Enum.KeyCode.RightShift or input.KeyCode == Enum.KeyCode.Insert then
+		isOpen = not isOpen
+		MainFrame.Visible = isOpen
+	end
+end)
