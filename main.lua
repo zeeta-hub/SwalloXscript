@@ -108,7 +108,7 @@ spawn(function()
     end
 end)
 
--- Tabs Setup Sesuai Permintaan (Hanya Home, Player, Main)
+-- Tabs Setup (Home, Player, Main)
 local HomeTab = Window:MakeTab({
     Name = "Home",
     Icon = "rbxassetid://4483345998",
