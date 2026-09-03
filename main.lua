@@ -1,9 +1,3 @@
--- ==========================================
--- SWALLO HUB LUA - ALL IN ONE
--- Theme: Red & Dark Modern UI
--- Features: Draggable, Toggle UI Key, Animations, Functional Tabs
--- ==========================================
-
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
