@@ -1,3 +1,9 @@
+-- ==========================================
+-- SWALLO HUB LUA - ALL IN ONE WITH FLOATING UI
+-- Theme: Red & Dark Modern UI
+-- Features: Draggable, Floating Toggle Button, Animations, Functional Tabs
+-- ==========================================
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
@@ -56,7 +62,7 @@ Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Minimize / Close Button (UI Open Close Toggle via Button)
+-- Minimize / Close Button inside TopBar
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Parent = TopBar
 CloseBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
@@ -81,20 +87,48 @@ CloseBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Toggle UI visibility using LeftControl / Right Shift key notification
-local hint = Instance.new("TextLabel")
-hint.Parent = ScreenGui
-hint.BackgroundTransparency = 0.5
-hint.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-hint.Position = UDim2.new(0.5, -125, 0, 10)
-hint.Size = UDim2.new(0, 250, 0, 25)
-hint.Font = Enum.Font.Gotham
-hint.Text = "Press [RightShift] to Hide/Show UI"
-hint.TextColor3 = Color3.fromRGB(255, 255, 255)
-hint.TextSize = 11
+-- ==========================================
+-- FLOATING UI / TOGGLE BUTTON (MOBILE & PC)
+-- ==========================================
+local FloatingBtn = Instance.new("TextButton")
+FloatingBtn.Name = "FloatingToggle"
+FloatingBtn.Parent = ScreenGui
+FloatingBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+FloatingBtn.BorderColor3 = Color3.fromRGB(200, 0, 0)
+FloatingBtn.BorderSizePixel = 2
+FloatingBtn.Position = UDim2.new(0, 20, 0.5, -25)
+FloatingBtn.Size = UDim2.new(0, 50, 0, 50)
+FloatingBtn.Font = Enum.Font.GothamBold
+FloatingBtn.Text = "Swallo"
+FloatingBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FloatingBtn.TextSize = 11
+FloatingBtn.Active = true
+FloatingBtn.Draggable = true
 
-game:GetService("Debris"):AddItem(hint, 6)
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = FloatingBtn
 
+local isFloatingOpen = true
+FloatingBtn.MouseButton1Click:Connect(function()
+    isFloatingOpen = not isFloatingOpen
+    if isFloatingOpen then
+        MainFrame.Visible = true
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 550, 0, 350),
+            BackgroundTransparency = 0
+        }):Play()
+    else
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 0, 0, 0),
+            BackgroundTransparency = 1
+        }):Play()
+        task.wait(0.3)
+        MainFrame.Visible = false
+    end
+end)
+
+-- Keyboard Shortcut: RightShift to Hide/Show UI
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if input.KeyCode == Enum.KeyCode.RightShift then
         MainFrame.Visible = not MainFrame.Visible
@@ -384,7 +418,6 @@ TestWebhookBtn.Text = "Test Webhook & Send Summary"
 TestWebhookBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 TestWebhookBtn.TextSize = 12
 
-TestWebhookBtn.MouseButton1Click:Connectf = function()
+TestWebhookBtn.MouseButton1Click:Connect(function()
     print("Webhook summary packet executed!")
-end
-TestWebhookBtn.MouseButton1Click:Connect(TestWebhookBtn.MouseButton1Click)
+end)
